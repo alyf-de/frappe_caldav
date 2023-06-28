@@ -21,9 +21,9 @@ def get_calendar(nuser):
   fp_user = frappe.get_doc("User", nuser)
   if fp_user.caldav_url and fp_user.caldav_username and fp_user.caldav_token:
     if fp_user.caldav_url[-1] == "/":
-      caldav_url = fp_user.caldav_url + "users/" + fp_user.caldav_username
+      caldav_url = f"{fp_user.caldav_url}users/{fp_user.caldav_username}"
     else:
-      caldav_url = fp_user.caldav_url + "/users/" + fp_user.caldav_username
+      caldav_url = f"{fp_user.caldav_url}/users/{fp_user.caldav_username}"
     # print(caldav_url)
     caldav_username = fp_user.caldav_username
     caldav_token = get_decrypted_password('User', nuser, 'caldav_token', False)
@@ -37,10 +37,9 @@ def get_calendar(nuser):
       # print("[INFO] Received %i calendars:" % len(calendars))
       cal_url = caldav_url.replace("principals/users","calendars")
       for c in calendars:
-        print("Name: %-20s  URL: %s" % (c.name, c.url.replace(cal_url +"/" , "").replace("/","")))
-        scal = {}
-        scal['name'] = c.name
-        scal['url'] = str(c.url)
+        print("Name: %-20s  URL: %s" %
+              (c.name, c.url.replace(f"{cal_url}/", "").replace("/", "")))
+        scal = {'name': c.name, 'url': str(c.url)}
         arr_cal.append(scal)
     else:
       frappe.msgprint(_("Server has no calendars for your user"))
